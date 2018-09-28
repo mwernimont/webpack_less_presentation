@@ -1,0 +1,162 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Webpack and LESS</title>
+<link rel="stylesheet" type="text/css" href="./styles.css">
+</head>
+
+<body>
+	<div id="container">
+		<h1>Why Use a CSS Preprocessor?</h1>
+		<h3>1. Cleaner Structure with Nesting</h3>
+		<p>With normal CSS we have to write out each rule separately which will over time cause repition of the same code.</p>
+<pre><code class="language-css">
+	#container {}
+	
+	#container #nav {}
+	
+	#container #nav ul {}
+	
+	#container #nav ul li {}
+	
+	#container #nav ul li a {}
+</code>
+</pre>
+		<p>LESS allows us to show hierarchy by letting us nest rule sets, saving time and code space.</p>
+		
+<pre><code class="language-css">
+	#container {
+		#nav {
+			ul {
+				 li {
+				 	a {}
+				 }
+			}
+		}
+	}
+</code>
+</pre>
+		<h3>2. Variables for Faster Maintenance</h3>
+		<p>We usually end up applying the same style across multiple elements across an app, such as color or background.  If and when we decide to change that style, we have to do a find a replace across the stlye sheet, or we can create bloated selectors, which creates ugly CSS code that becomes hard to read.</p>
+<pre><code class="language-css">
+	#container, 
+	#sidebar, 
+	.heading, 
+	#footer,
+	.aside{
+		color: lime;
+	}
+</code>
+</pre>
+		<p>With LESS we can specify a variables in one place and apply them in clean CSS selectors.  One spot to make the change across a style sheet, and no bloated selectors.</p>
+<pre><code class="language-css">
+	@color: lime;
+	
+	#container{
+		color: @color;
+	}
+	
+	#footer{
+		color: @color;
+	}
+	
+	.aside{
+		color: @color;
+	}
+</code>
+</pre>
+		<h3>3. Keeping code DRY</h3>
+		<p>Let's say we have some CSS like this:</p>
+<pre><code class="language-css">
+	#sideBar{
+		background: #EEE;
+		border: 1px solid red;
+		border-radius: 5px;
+		padding: 10px;
+	}
+	
+	#login{
+		background: #CCC;
+		border: 1px solid red;
+		border-radius: 5px;
+		padding: 10px;
+	}
+</code>
+</pre>
+		<p>Repeated code is bulking us up and is going to become hard to maintain.  We could create a class to drop the repetition.</p>
+<pre><code class="language-css">
+	.shared{
+		border: 1px solid red;
+		border-radius: 5px;
+		padding: 10px;
+	}
+	
+	#sideBar{
+		background: #EEE;
+	}
+	
+	#login{
+		background: #CCC;
+	}
+</code>
+</pre>
+		<p>But what if we decide the sidebar needs some more padding or the login needs less rounding?</p>
+<pre><code class="language-css">
+	.shared{
+		border: 1px solid red;
+	}
+	
+	#sideBar{
+		background: #EEE;
+		padding: 15px;
+		border-radius: 5px;
+	}
+	
+	#login{
+		background: #CCC;
+		padding: 10px;
+		border-radius: 3px;
+	}
+</code>
+</pre>
+		<p>Bleh, we are right back to repeated code and wasted space.  Enter LESS mixins and Reusable Classes.</p>
+<pre><code class="language-css">
+	.shared(@round: 5px, @padding: 10px, @border: 1px solid red){
+		border-radius: @round;
+		padding: @padding;
+		border: @border;
+	}
+	
+	#sideBar{
+		background: #EEE;
+		.shared(@padding: 15px);
+	}
+	
+	#login{
+		background: #CCC;
+		.shared(@round: 3px);
+	}
+</code>
+</pre>		
+		<p>Individual tweaking all while using one class? Pretty handy! Here's the CSS output of that LESS Mixin.</p> 
+<pre><code class="language-css">
+	#sideBar{
+		background: #EEE;
+		border-radius: 5px;
+		padding: 15px;
+		border: 1px solid red;
+	}
+	
+	#login{
+		background: #CCC;
+		border-radius: 3px;
+		padding: 10px;
+		border: 1px solid red;
+	}
+</code>
+</pre>	
+	</div>
+	<script type="text/javascript" src="./app.bundle.js"></script>
+</body>
+</html>

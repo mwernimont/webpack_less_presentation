@@ -1,0 +1,62 @@
+@font-face{
+	font-family: 'MyFont';
+	src: url('../fonts/roboto-regular-webfont.ttf') format('ttf'),
+		url('../fonts/roboto-regular-webfont.woff') format('woff'),
+		url(../fonts/roboto-regular-webfont.woff2) format('woff2');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@background: #202125;
+@white: #fff;
+@selector: #fec76d;
+@punctuation: #fff;
+@property: #6d9bbc;
+@green: #a6c160;
+
+*{
+	padding:0;
+	margin: 0;
+}
+
+body{
+	background: @background;
+	font-family: "MyFont";
+	
+	h3{
+		margin-top:20px;
+	}
+	p{
+		margin:10px 0;
+	}
+}
+
+pre{
+	background: @background;
+	color: @green;
+	min-height:20px;
+	-moz-tab-size:4;
+  	-o-tab-size:4;
+  	tab-size:4;
+	
+	.selector{
+		color: @selector;
+	}
+	
+	.punctuation{
+		color: @punctuation;
+	}
+	
+	.property, .function{
+		color: @property;
+	}
+}
+
+
+#container{
+	background: @white;
+	min-height: 200px;
+	width: 780px;
+	margin: 20px auto 20px auto;
+	padding:10px;
+}
