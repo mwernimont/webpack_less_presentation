@@ -13,6 +13,7 @@
 @punctuation: #fff;
 @property: #6d9bbc;
 @green: #a6c160;
+@marginBottom20: 0 0 20px 0;
 
 *{
 	padding:0;
@@ -22,14 +23,26 @@
 body{
 	background: @background;
 	font-family: "MyFont";
+}
+
+.header{
+	margin: @marginBottom20;
+}
+
+
+.point{
+	margin: @marginBottom20;
 	
 	h3{
-		margin-top:20px;
+		margin: 0 0 10px 0;
 	}
+	
 	p{
-		margin:10px 0;
+		margin: 10px 0 10px 0;
+		line-height: 2em;
 	}
 }
+
 
 pre{
 	background: @background;

@@ -8,9 +8,12 @@
 
 <body>
 	<div id="container">
-		<h1>Why Use a CSS Preprocessor?</h1>
-		<h3>1. Cleaner Structure with Nesting</h3>
-		<p>With normal CSS we have to write out each rule separately which will over time cause repition of the same code.</p>
+		<div class="header">
+			<h1>Why Use a CSS Preprocessor?</h1>
+		</div>
+		<div class="point">
+			<h3>1. Cleaner Structure with Nesting</h3>
+			<p>With normal CSS we have to write out each rule separately which will over time cause repition of the same code.</p>
 <pre><code class="language-css">
 	#container {}
 	
@@ -37,8 +40,35 @@
 	}
 </code>
 </pre>
-		<h3>2. Variables for Faster Maintenance</h3>
-		<p>We usually end up applying the same style across multiple elements across an app, such as color or background.  If and when we decide to change that style, we have to do a find a replace across the stlye sheet, or we can create bloated selectors, which creates ugly CSS code that becomes hard to read.</p>
+		</div><!--point-->
+		
+		<div class="point">
+			<h3>2. Variables for Faster Maintenance</h3>
+			<p>We usually end up applying the same style across multiple elements across an app, such as color or background.  If and when we decide to change that style, we have to do a find a replace across the stlye sheet.  Below shows one way to get each element its rule.</p>
+<pre><code class="language-css">
+	#container{
+		color: lime;
+	}
+	
+	#sidebar{
+		color: lime;
+	}
+	
+	.heading{
+		color: lime;
+	}
+	
+	#footer{
+		color: lime;
+	}
+	
+	.aside{
+		color: lime;
+	}
+</code>
+</pre>
+			<p>It is pretty wasteful, better way?  Selector list:</p>
+			
 <pre><code class="language-css">
 	#container, 
 	#sidebar, 
@@ -49,7 +79,7 @@
 	}
 </code>
 </pre>
-		<p>With LESS we can specify a variables in one place and apply them in clean CSS selectors.  One spot to make the change across a style sheet, and no bloated selectors.</p>
+			<p>The rule is only listed once and it gets to all the correct elements.  Problem? Well this list could get very bloated and may cause the coder to reread this list just to see if the element is actually apart of the list.  Also its putting CSS selectors in multiple places, which will cause future hunting down of said selectors inside the CSS file.  Solution?  LESS Variables.  We can create a reusable Variable and place it any element we wish, then when it comes to that pesky design redecision, we change one piece of code and it flows to all the elements that contain that Variable. No bloated selectors and easier to read code.</p>
 <pre><code class="language-css">
 	@color: lime;
 	
@@ -66,8 +96,11 @@
 	}
 </code>
 </pre>
-		<h3>3. Keeping code DRY</h3>
-		<p>Let's say we have some CSS like this:</p>
+		</div><!--point-->
+		
+		<div class="point">
+			<h3>3. Keeping code DRY</h3>
+			<p>Let's say we have some CSS like this:</p>
 <pre><code class="language-css">
 	#sideBar{
 		background: #EEE;
@@ -84,7 +117,7 @@
 	}
 </code>
 </pre>
-		<p>Repeated code is bulking us up and is going to become hard to maintain.  We could create a class to drop the repetition.</p>
+			<p>Repeated code is bulking us up and is going to become hard to maintain.  We could create a class to drop the repetition.</p>
 <pre><code class="language-css">
 	.shared{
 		border: 1px solid red;
@@ -101,7 +134,7 @@
 	}
 </code>
 </pre>
-		<p>But what if we decide the sidebar needs some more padding or the login needs less rounding?</p>
+			<p>But what if we decide the sidebar needs some more padding or the login needs less rounding?</p>
 <pre><code class="language-css">
 	.shared{
 		border: 1px solid red;
@@ -120,7 +153,7 @@
 	}
 </code>
 </pre>
-		<p>Bleh, we are right back to repeated code and wasted space.  Enter LESS mixins and Reusable Classes.</p>
+			<p>Bleh, we are right back to repeated code and wasted space.  Enter LESS mixins and Reusable Classes.</p>
 <pre><code class="language-css">
 	.shared(@round: 5px, @padding: 10px, @border: 1px solid red){
 		border-radius: @round;
@@ -139,7 +172,7 @@
 	}
 </code>
 </pre>		
-		<p>Individual tweaking all while using one class? Pretty handy! Here's the CSS output of that LESS Mixin.</p> 
+			<p>Individual tweaking all while using one class? Pretty handy! Here's the CSS output of that LESS Mixin.</p> 
 <pre><code class="language-css">
 	#sideBar{
 		background: #EEE;
@@ -156,7 +189,150 @@
 	}
 </code>
 </pre>	
-	</div>
+		</div><!--point-->
+		
+		<div class="header">
+			<h1>Webpack and LESS</h1>
+		</div>
+		
+		<div class="point">
+			<h3>1. Setup</h3>
+			
+			<p>You need to setup a NodeJS project first which is pretty simple.</p>
+			
+<pre><code>
+	npm init -y
+</code>
+</pre>
+			<p>and install the respected packages that you need to run Webpack and LESS, with some other packages to keep development cleaner.</p>
+			
+<pre><code>
+	npm install webpack webpack-cli css-loader less less-loader mini-css-extract-plugin
+</code>
+</pre>
+			<p>After those are installed its a simple creation of the webpack.common.js</p>
+<pre><code>
+	const path = require('path');
+	const CleanWebpackPlugin = require('clean-webpack-plugin');
+	const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+
+	let pathsToClean = [
+		'dist'	
+	];
+
+	//Don't want to use the webpack html generator for Vizlab most likely
+	//Allows us to tell webpack to exclude certain files from being cleaned
+	let cleanOptions = {
+		exclude: ['index.html']
+	};
+
+	module.exports = {
+		entry: {
+			app: './src/index.js'
+		},
+		output: {
+			filename: '[name].bundle.js',
+			path: path.resolve(__dirname, 'dist')
+		},
+		plugins:[
+			new CleanWebpackPlugin(pathsToClean, cleanOptions),
+			new MiniCssExtractPlugin({
+				filename: 'styles.css'
+			})
+		],
+		module:{
+			rules: [
+				{
+					test: /\.less$/,
+					use: [
+						MiniCssExtractPlugin.loader,
+						'css-loader',
+						'less-loader'
+					]
+				},
+				{
+					test: /\.(woff|woff2|eot|ttf|otf)$/,
+					use: [
+						'file-loader'
+					]
+				}
+			]
+		}
+	};
+</code>
+</pre>
+			<p>Let's highlight the LESS part of the webpack configure file.</p>
+<pre><code>
+	module:{
+			rules: [
+				{
+					test: /\.less$/,
+					use: [
+						'css-loader',
+						'less-loader'
+					]
+				}
+			]
+		}
+</code>
+</pre>
+			<p>As Webpack is a JavaScript tool, its needs to be told how to handle LESS and CSS, as a LESS file has both inside of it. We use Regex to look for any less file:</p>
+			
+<pre><code>
+	test: /\.less$/,
+</code>
+</pre>
+			<p>and then tell Webpack what libraires to use to dechipher this non JS file.</p>
+			
+<pre><code>
+	use: [
+		'css-loader',
+		'less-loader'
+	]
+</code>
+</pre>
+			<p>After we have that setup, we only have three more things to do! First, telling the index.js to import the less file, so Webpack knows its an essential file.</p>
+			
+<pre><code>
+	import './less/styles.less';
+</code>
+</pre>
+			<p>Then we need to run Webpack so we can have that CSS file generated for our HTML file to read and use.  We set this commands up in the package.json file.</p>
+<pre><code>
+	npm run dev
+</code>
+</pre>	
+			<p>In which we should get a success message showing the CSS file was created and Webpack ran successfully.</p>
+<pre><code>
+	styles.css  2.68 KiB     app  [emitted]  app
+    app.bundle.js  71.7 KiB     app  [emitted]  app
+	Entrypoint app = styles.css app.bundle.js
+	[./node_modules/webpack/buildin/global.js] (webpack)/buildin/global.js 509 bytes {app} [built]
+	[./src/index.js] 57 bytes {app} [built]
+	[./src/less/styles.less] 39 bytes {app} [built]
+		+ 2 hidden modules
+	Child mini-css-extract-plugin node_modules/css-loader/index.js!node_modules/less-loader/dist/
+		cjs.js!src/less/styles.less:
+		Entrypoint mini-css-extract-plugin = *
+		[./node_modules/css-loader/index.js!./node_modules/less-loader/dist/cjs.js!./src/less/
+		styles.less] ./node_modules/css-loader!./node_modules/less-loader/dist/cjs.js!./src/less/
+		styles.less 1.22 KiB {mini-css-extract-plugin} [built]
+		[./src/fonts/roboto-regular-webfont.ttf] 82 bytes {mini-css-extract-plugin} [built]
+		[./src/fonts/roboto-regular-webfont.woff] 83 bytes {mini-css-extract-plugin} [built]
+		[./src/fonts/roboto-regular-webfont.woff2] 84 bytes {mini-css-extract-plugin} [built]
+			+ 2 hidden modules
+</code>
+</pre>
+		<p>Webpack inherently creates a dist folder for all of its created files, so all we have left to do is attach the CSS file to our Index.html</p>
+<pre><code class="language-html">
+	rel="stylesheet" type="text/css" href="./styles.css"
+</code>
+</pre>	
+		<p>Boom! LESS effiency to our Vizlab projects.  A very useful tool is <a href="https://webpack.js.org/guides/getting-started/">https://webpack.js.org/guides/getting-started/</a></p>	
+		</div>
+		
+		
+	</div><!--container-->
 	<script type="text/javascript" src="./app.bundle.js"></script>
 </body>
 </html>
